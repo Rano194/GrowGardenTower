@@ -1,0 +1,5 @@
+if game:GetService("Players").LocalPlayer.leaderstats.Cash.Value > 200 then
+    print("1")
+else
+    print("2")
+end
