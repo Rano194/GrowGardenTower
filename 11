@@ -1,0 +1,71 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local PlaceUnit = ReplicatedStorage:WaitForChild("RemoteFunctions"):WaitForChild("PlaceUnit")
+
+task.spawn(function()
+    task.wait(1)
+    PlaceCustomUnit("unit_razor", 270, Vector3.new(-332.095458984375, 63.933753967285156, -216.42617797851562))
+end)
+
+
+task.spawn(function()
+    task.wait(5)
+    while true do
+    local args = {
+	    2
+        }
+    game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("ChangeTickSpeed"):InvokeServer(unpack(args))
+    end
+end)
+
+task.spawn(function()
+    while true do
+        local args = {
+            "y"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("SkipWave"):InvokeServer(unpack(args))
+        task.wait()
+    end
+end)
+
+while true do
+    task.wait(0.2)
+    local args = {
+	workspace.Map.Entities.unit_razor:GetAttribute("ID")
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("UpgradeUnit"):InvokeServer(unpack(args))
+    if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.Screen.Middle.GameEnd.Visible == true then
+        break
+    end
+end
+
+task.spawn(function()
+    while true do
+        task.wait(1)
+        if game:GetService("Players").LocalPlayer.PlayerGui.GameGui.Screen.Middle.GameEnd.Visible == true then
+            task.wait(1)
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("RestartGame"):InvokeServer()
+            task.wait(3)
+            local args = {
+            	"dif_impossible"
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("PlaceDifficultyVote"):InvokeServer(unpack(args))
+            task.wait(6)
+            PlaceCustomUnit("unit_razor", 270, Vector3.new(-332.095458984375, 63.933753967285156, -216.42617797851562))
+        end
+    end
+end)
+
+
+function PlaceCustomUnit(unitName, rotation, position)
+	local args = {
+		unitName,
+		{
+			Valid = true,
+			Rotation = rotation,
+			CF = CFrame.new(position.X, position.Y, position.Z, 1.1924880638503055e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924880638503055e-08),
+			Position = vector.create(position.X, position.Y, position.Z)
+		}
+	}
+	
+	PlaceUnit:InvokeServer(unpack(args))
+end
