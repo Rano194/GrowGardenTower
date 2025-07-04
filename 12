@@ -1,0 +1,85 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RemoteFunctions = ReplicatedStorage:WaitForChild("RemoteFunctions")
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local GameGui = PlayerGui:WaitForChild("GameGui")
+
+local function PlaceCustomUnit(unitName, rotation, position)
+	local args = {
+		unitName,
+		{
+			Valid = true,
+			Rotation = rotation,
+			CF = CFrame.new(position.X, position.Y, position.Z, 1.1924880638503055e-08, 0, -1, 0, 1, 0, 1, 0, 1.1924880638503055e-08),
+			Position = vector.create(position.X, position.Y, position.Z)
+		}
+	}
+	RemoteFunctions:WaitForChild("PlaceUnit"):InvokeServer(unpack(args))
+end
+
+local function ChooseDifficulty()
+	local args = {
+		"dif_impossible"
+	}
+	RemoteFunctions:WaitForChild("PlaceDifficultyVote"):InvokeServer(unpack(args))
+end
+
+local function ChangeTickSpeed()
+	while true do
+		task.wait(5)
+		local args = { 2 }
+		RemoteFunctions:WaitForChild("ChangeTickSpeed"):InvokeServer(unpack(args))
+	end
+end
+
+local function SkipWaves()
+	while true do
+		task.wait()
+		local args = { "y" }
+		RemoteFunctions:WaitForChild("SkipWave"):InvokeServer(unpack(args))
+	end
+end
+
+local function UpgradeLoop()
+	while true do
+		task.wait(0.2)
+		local unit = workspace.Map.Entities:FindFirstChild("unit_razor")
+		if unit then
+			local args = { unit:GetAttribute("ID") }
+			RemoteFunctions:WaitForChild("UpgradeUnit"):InvokeServer(unpack(args))
+		end
+		if GameGui.Screen.Middle.GameEnd.Visible == true then
+			break
+		end
+	end
+end
+
+local function RestartCycle()
+	while true do
+		task.wait(1)
+		if GameGui.Screen.Middle.GameEnd.Visible then
+			task.wait(1)
+			RemoteFunctions:WaitForChild("RestartGame"):InvokeServer()
+			task.wait(3)
+			ChooseDifficulty()
+			task.wait(6)
+			PlaceCustomUnit("unit_razor", 270, Vector3.new(-332.095458984375, 63.933753967285156, -216.42617797851562))
+			task.spawn(UpgradeLoop)
+		end
+	end
+end
+
+-- 🧠 Основной старт: один раз выбираем сложность и ставим юнита
+task.spawn(function()
+	task.wait(1)
+	ChooseDifficulty()
+	task.wait(6)
+	PlaceCustomUnit("unit_razor", 270, Vector3.new(-332.095458984375, 63.933753967285156, -216.42617797851562))
+end)
+
+-- 📦 Остальные функции в фоне
+task.spawn(ChangeTickSpeed)
+task.spawn(SkipWaves)
+task.spawn(UpgradeLoop)
+task.spawn(RestartCycle)
