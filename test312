@@ -1,0 +1,40 @@
+script_key="UlecPWDMlGKwniCbymzUbCftnkpdsyGF";
+getgenv().Config = {
+    ["PetFarmAutoSwitchFullGrown"] = false,
+    ["PetFarmActive"] = false,
+    ["EggFarmActive"] = false,
+    ["HideUselessGui"] = false,
+    ["Blur_username"] = false,
+    ["Blazing_Lion_Log"] = false,
+    ["DiscordId"] = "123456",
+    ["Webhook"] = "",
+}
+loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/66567bfd337b57eb059b58dbe1badb89.lua"))()
+
+task.wait(60)
+
+task.spawn(function()
+    task.wait(60)
+    for i = 1,50 do task.wait()
+		local args = {
+			"pets",
+			"summerfest_2025_coconut_friend",
+		{
+		buy_count = 1
+		}
+		}
+		game:GetService("ReplicatedStorage"):WaitForChild("API"):WaitForChild("ShopAPI/BuyItem"):InvokeServer(unpack(args))
+    end
+end)
+
+task.wait(100)
+
+task.spawn(function()
+    getgenv().Config = {
+        ["inventory"] = "pets", -- Adapt to stickers, gifts, toys, pet_accessories, transport, gifts
+        ["username"] = "RanoPets",
+        ["pets_to_trade"] = {"summerfest_2025_coconut_friend"} -- or lures_2023_blazing_lion cant auto trade gifts with pet ONLY 1
+    }
+
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/diwserenityhub/other/refs/heads/main/auto_trade_wee.lua"))()
+end)
